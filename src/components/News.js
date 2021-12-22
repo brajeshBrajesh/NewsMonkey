@@ -47,6 +47,7 @@ export class news extends Component {
     };
     console.log(this.articles);
   }
+  // /HI
   async componentDidMount() {
     console.log("ComponentDidMount");
     let url =
@@ -56,8 +57,8 @@ export class news extends Component {
     console.log(parsedData);
     let disablePrev = true;
     let disableNext = false;
-    let numPages = Math.ceil(parsedData.totalResults / 20);
-    if (numPages == 1) disableNext = true;
+    let NumPages = Math.ceil(parsedData.totalResults / 20);
+    if (NumPages == 1) disableNext = true;
     this.setState({
       articles: parsedData.articles,
       page: 1,
