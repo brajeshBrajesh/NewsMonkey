@@ -117,7 +117,7 @@ export class news extends Component {
       <>
         <div className="container">
           <h1 style={{ textAlign: "center" }} className="my-4">
-            NewsMonkey-Top Headlines
+            NewsMonkey Top Headlines
           </h1>
           {this.state.loading && <Spinner />}
           <div className="row">
