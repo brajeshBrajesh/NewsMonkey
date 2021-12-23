@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
-
+import Spinner from "./Spinner";
 export class news extends Component {
   articles = [
     // {
@@ -43,34 +43,40 @@ export class news extends Component {
     console.log("Constructor of news section called");
     this.state = {
       articles: this.articles,
-      loading: false,
+      loading: true,
     };
     console.log(this.articles);
   }
-  // /HI
+
   async componentDidMount() {
     console.log("ComponentDidMount");
-    let url =
-      "https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=1&pageSize=20";
+    let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=1&pageSize=${this.props.pageSize}`;
+    this.setState({
+      loading: true,
+    });
     let data = await fetch(url);
     let parsedData = await data.json();
     console.log(parsedData);
     let disablePrev = true;
     let disableNext = false;
-    let NumPages = Math.ceil(parsedData.totalResults / 20);
+    let NumPages = Math.ceil(parsedData.totalResults / this.props.pageSize);
     if (NumPages == 1) disableNext = true;
     this.setState({
       articles: parsedData.articles,
       page: 1,
       disableNext: disableNext,
       disablePrev: disablePrev,
+      loading: false,
     });
   }
 
   handlePrevClick = async () => {
     console.log("Prev click");
     let page = this.state.page - 1;
-    let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=${page}&pageSize=20`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=${page}&pageSize=${this.props.pageSize}`;
+    this.setState({
+      loading: true,
+    });
     let data = await fetch(url);
     let parsedData = await data.json();
     let disablePrev = false;
@@ -81,23 +87,28 @@ export class news extends Component {
       page: page,
       disableNext: disableNext,
       disablePrev: disablePrev,
+      loading: false,
     });
   };
   handleNextClick = async () => {
     console.log("Next click ");
     let page = this.state.page + 1;
-    let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=${page}&pageSize=20`;
+    let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=${page}&pageSize=${this.props.pageSize}`;
+    this.setState({
+      loading: true,
+    });
     let data = await fetch(url);
     let parsedData = await data.json();
     let disablePrev = false;
     let disableNext = false;
-    let numPages = Math.ceil(parsedData.totalResults / 20);
+    let numPages = Math.ceil(parsedData.totalResults / this.props.pageSize);
     if (page >= numPages) disableNext = true;
     this.setState({
       articles: parsedData.articles,
       page: page,
       disableNext: disableNext,
       disablePrev: disablePrev,
+      loading: false,
     });
   };
 
@@ -108,27 +119,29 @@ export class news extends Component {
           <h1 style={{ textAlign: "center" }} className="my-4">
             NewsMonkey-Top Headlines
           </h1>
+          {this.state.loading && <Spinner />}
           <div className="row">
-            {this.state.articles.map((element) => {
-              return (
-                <div className="col-md-4" key={element.url}>
-                  <NewsItem
-                    title={element.title ? element.title.slice(0, 45) : ""}
-                    description={
-                      element.description
-                        ? element.description.slice(0, 130)
-                        : ""
-                    }
-                    newsUrl={element.url}
-                    imageUrl={
-                      element.urlToImage
-                        ? element.urlToImage
-                        : "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg"
-                    }
-                  />
-                </div>
-              );
-            })}
+            {!this.state.loading &&
+              this.state.articles.map((element) => {
+                return (
+                  <div className="col-md-4" key={element.url}>
+                    <NewsItem
+                      title={element.title ? element.title.slice(0, 45) : ""}
+                      description={
+                        element.description
+                          ? element.description.slice(0, 130)
+                          : ""
+                      }
+                      newsUrl={element.url}
+                      imageUrl={
+                        element.urlToImage
+                          ? element.urlToImage
+                          : "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg"
+                      }
+                    />
+                  </div>
+                );
+              })}
           </div>
         </div>
         <div className="container my-2 d-flex justify-content-between">
