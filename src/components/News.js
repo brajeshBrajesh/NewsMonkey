@@ -1,7 +1,20 @@
 import React, { Component } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
+import PropTypes from "prop-types";
+
 export class news extends Component {
+  static defaultProps = {
+    pageSize: 10,
+    country: "in",
+    category: "general",
+  };
+  static propTypes = {
+    country: PropTypes.string,
+    pageSize: PropTypes.number,
+    category: PropTypes.string,
+  };
+
   articles = [
     // {
     //   source: {
@@ -50,7 +63,7 @@ export class news extends Component {
 
   async componentDidMount() {
     console.log("ComponentDidMount");
-    let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=1&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=1&pageSize=${this.props.pageSize}`;
     this.setState({
       loading: true,
     });
@@ -60,7 +73,7 @@ export class news extends Component {
     let disablePrev = true;
     let disableNext = false;
     let NumPages = Math.ceil(parsedData.totalResults / this.props.pageSize);
-    if (NumPages == 1) disableNext = true;
+    if (NumPages === 1) disableNext = true;
     this.setState({
       articles: parsedData.articles,
       page: 1,
@@ -73,7 +86,7 @@ export class news extends Component {
   handlePrevClick = async () => {
     console.log("Prev click");
     let page = this.state.page - 1;
-    let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=${page}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=${page}&pageSize=${this.props.pageSize}`;
     this.setState({
       loading: true,
     });
@@ -81,7 +94,7 @@ export class news extends Component {
     let parsedData = await data.json();
     let disablePrev = false;
     let disableNext = false;
-    if (page == 1) disablePrev = true;
+    if (page === 1) disablePrev = true;
     this.setState({
       articles: parsedData.articles,
       page: page,
@@ -93,7 +106,7 @@ export class news extends Component {
   handleNextClick = async () => {
     console.log("Next click ");
     let page = this.state.page + 1;
-    let url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=${page}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=50a60f7ef59e488f81c23e2a2574e94c&page=${page}&pageSize=${this.props.pageSize}`;
     this.setState({
       loading: true,
     });
@@ -137,6 +150,13 @@ export class news extends Component {
                         element.urlToImage
                           ? element.urlToImage
                           : "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg"
+                      }
+                      author={element.author ? element.author : "Unknown"}
+                      publishedAt={
+                        element.publishedAt ? element.publishedAt : "Unknown"
+                      }
+                      source={
+                        element.source.name ? element.source.name : "Unknown"
                       }
                     />
                   </div>

@@ -6,18 +6,32 @@ export class NewsItem extends Component {
     console.log("Constructor of NewsItem called");
   }
   render() {
-    let { title, description, imageUrl, newsUrl } = this.props;
+    let { title, description, imageUrl, newsUrl, author, publishedAt, source } =
+      this.props;
     return (
       <>
-        <div className="card" style={{ width: "18rem" }}>
+        <div className="card my-3">
           <img src={imageUrl} className="card-img-top" alt="/" />
+
           <div className="card-body">
+            <span className=" badge rounded-pill bg-success">{source}</span>
             <h5 className="card-title">{title}...</h5>
+
             <p className="card-text">{description}...</p>
-            <a href={newsUrl} target="_blank" className="btn btn-primary ">
+            <a
+              href={newsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary "
+            >
               Read
             </a>
           </div>
+          <p class="card-text">
+            <small class="text-muted">
+              By {author} at {new Date(publishedAt).toUTCString()}
+            </small>
+          </p>
         </div>
       </>
     );
